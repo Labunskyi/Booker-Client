@@ -41,22 +41,37 @@
 	
 	login() {
 
-		const formData = {
+		const data = {
 			username: this.username,
 			password: this.password
 		
 		}
-		
-		this.$http.post('http://rest-classwork.local/Server/api/users/userslogin/', formData)
-		.then(response => {
-			console.log(response)
-			return response.json()
+		if (this.username != "" && this.password != "") {
+		this.$http.post('http://rest-classwork.local/Server/api/users/userslogin/', data)
+		.then( function(response) {
+			
+			if (response.body) {
+				
+				localStorage.setItem("user", JSON.stringify(response.body));
+				var savedUser = JSON.parse(localStorage.getItem("user"));
+				//loginForm.style.display = 'none';
+				//document.getElementById("login-register").style.display = 'none';
+				//userInfo.style.display = 'block';
+				this.$router.push('/')
+				return response.json()
+			} else { 
+			
+				alert("Wrong name or password"); 
+			}
 		})
 		.then(formData => {
-			console.log(formData)
 			this.formData = formData
-			console.log(formData)
+			console.log(formData);
+			
 		})
+		} else {
+        alert("A username and password must be present");
+      }
 	}
   }
 }

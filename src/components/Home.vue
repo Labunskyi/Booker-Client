@@ -29,9 +29,28 @@
 				</table>
 			</div>
 			<div class="col-md-2 form-group">
+				<div class="user-form">
+				   <div class="user-info" id='user-info'>
+						Hello, <span name="infoUsername">name</span>
+						<br>
+						<button type="submit" class="btn btn-primary" onclick="logout()">Logout</button>
+					</div>	
+				</div>
 				<div class='login-register' id='login-register'>
 					<router-link :to="'/login'" class="btn btn-primary" role="button" aria-pressed="true">Login</router-link>
 					<router-link :to="'/register'" class="btn btn-primary" role="button" aria-pressed="true">Register</router-link>
+				</div>
+				
+				<div>
+					<h4>Format week</h4>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="1" v-model="dFirstMonth" id="customRadio1" name="customRadio" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio1">Monday</label>
+					</div>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="0" v-model="dFirstMonth" id="customRadio2" name="customRadio" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio2">Sunday</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -47,7 +66,7 @@ export default {
 	return {
 		month: new Date().getMonth(),    
         year: new Date().getFullYear(), 
-        
+        dFirstMonth: '1',
         day:["Пн", "Вт","Ср","Чт","Пт","Сб", "Вс"],
         days: [],
 		monthes: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
@@ -61,11 +80,9 @@ export default {
 			days[week] = [];
 			var dfirst = new Date(this.year, this.month, 1).getDay();
 			var dlast = new Date(this.year, this.month + 1, 0).getDate();
-			var dlastPrMonth = (new Date(this.year, this.month, 0).getDate() + 1);
+			var dLastPrMonth = (new Date(this.year, this.month, 0).getDate() + 1);
                 for (let i = 1; i <= dlast; i++) {
-                    if (new Date(this.year, this.month, i).getDay() != 1) {
-					
-						if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) { a.current = 'blue'};
+                    if (new Date(this.year, this.month, i).getDay() != this.dFirstMonth) {
 						var a = {index: i, visible: ''};
                         days[week].push(a);
 						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = 'red'};
@@ -78,18 +95,15 @@ export default {
                         }
                     }
 				if (days[0].length == 0) {
-					console.log(days[0].length);
 					days = days.splice(1);
-					console.log(days);
 				}
 				if (days[0].length > 0) {
 					for (let i = days[0].length; i < 7; i++) {
-						dlastPrMonth -= 1;
-					
-						days[0].unshift(dlastPrMonth);
+						dLastPrMonth -= 1;
+						days[0].unshift(dLastPrMonth);
 					}
 				}
-				
+				this.dayChange;
 				return days;
 			},
             decrease: function(){
@@ -113,7 +127,16 @@ export default {
             },
 			
 			
-        }
+        },
+		computed:{
+            dayChange: function(){
+                if(this.dFirstMonth == 0){
+                    this.day = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+                }else{
+                    this.day = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+                }
+            }
+		}
 }
 </script>
 
@@ -132,5 +155,8 @@ export default {
 	.btn {
 			margin-right: 5px;
 			
+        }
+	.user-info{
+            display: none;
         }
 </style>

@@ -46,19 +46,27 @@ export default {
 		const formData = {
 			username: this.username,
 			password: this.password
-		
 		}
-		
+		if (this.username && this.password){
 		this.$http.post('http://rest-classwork.local/Server/api/users/users/', formData)
 		.then(response => {
-			console.log(response)
+			
+			this.$router.push('/login')
 			return response.json()
 		})
 		.then(formData => {
-			console.log(formData)
+			
 			this.formData = formData
-			console.log(formData)
+			if (formData.name) {
+				return true
+			} else { 
+				alert("The name is already used!"); 
+			}
+			
 		})
+	} else {
+		alert("A username and password must be present");
+	}
 	}
   }
 }
