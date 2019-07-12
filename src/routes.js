@@ -7,11 +7,13 @@ import Test from './components/Test'
 export default new VueRouter({
 	routes: [
 		{
-			path: '',
+			path: '/',
+            name: 'home',
 			component: Home
 		},
 		{
 			path: '/login',
+            name: 'login',
 			component: Login
 		},
 		{

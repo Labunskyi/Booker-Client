@@ -40,7 +40,6 @@
   methods: {
 	
 	login() {
-
 		const data = {
 			username: this.username,
 			password: this.password
@@ -53,7 +52,7 @@
 			if (response.body) {
 				
 				localStorage.setItem("user", JSON.stringify(response.body));
-				var savedUser = JSON.parse(localStorage.getItem("user"));
+				var user = JSON.parse(localStorage.getItem("user"));
 				//loginForm.style.display = 'none';
 				//document.getElementById("login-register").style.display = 'none';
 				//userInfo.style.display = 'block';
@@ -79,6 +78,4 @@
 
 <style scoped>
 	
-
 </style>
-

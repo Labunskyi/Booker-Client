@@ -1,8 +1,13 @@
 <template>
 	<div class="conteiner pt-2">
-    <h2>Booker</h2>
+
+		<div>
+			<span>{{ date | date('datetime') }}</span>
+			<h2>Booker</h2>
+		</div>
 		<div class="form-group row">
 			<div class="col-md-10 form-group">
+
 				<table class="table table-bordered">
 					<thead>
 					<tr>
@@ -14,7 +19,7 @@
 						</td>
 					</tr>
 					<tr >
-						<td v-for="(d, index) in day"> {{ d }} </td>
+						<td v-for="d in day"> {{ d }} </td>
 					</tr>
 					</thead>
 					
@@ -31,9 +36,9 @@
 			<div class="col-md-2 form-group">
 				<div class="user-form">
 				   <div class="user-info" id='user-info'>
-						Hello, <span name="infoUsername">name</span>
+						Hello, <span name="infoUsername"> {{ name }}</span>
 						<br>
-						<button type="submit" class="btn btn-primary" onclick="logout()">Logout</button>
+						<button type="submit" class="btn btn-primary" v-on:click="logout()">Logout</button>
 					</div>	
 				</div>
 				<div class='login-register' id='login-register'>
@@ -70,6 +75,8 @@ export default {
         day:["Пн", "Вт","Ср","Чт","Пт","Сб", "Вс"],
         days: [],
 		monthes: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+		date: new Date(),
+		name: ''
 
 	}
   },
@@ -125,17 +132,32 @@ export default {
                         this.year++;
                     }
             },
+			logout: function() {
+				localStorage.clear()
+				this.$router.push('/login')
+			},
 			
 			
         },
-		computed:{
+		computed: {
             dayChange: function(){
                 if(this.dFirstMonth == 0){
                     this.day = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
                 }else{
                     this.day = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
                 }
-            }
+            },
+			
+		},
+		mounted(){
+  			this.interval = setInterval(() =>{
+				this.date = new Date()
+			}, 1000)
+			var user = JSON.parse(localStorage.getItem("user"));
+			this.name = user.username
+		},
+		beforeDestroy(){
+  			clearInterval(this.interval)
 		}
 }
 </script>
@@ -156,7 +178,7 @@ export default {
 			margin-right: 5px;
 			
         }
-	.user-info{
-            display: none;
+	.login-register{
+            display: block;
         }
 </style>
