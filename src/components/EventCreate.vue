@@ -142,7 +142,6 @@ export default {
 		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
         let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
         alert('The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
-		this.event.description = '';
 		this.$router.push('/')
 		return response.json();
 		})

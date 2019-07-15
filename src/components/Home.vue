@@ -256,6 +256,11 @@ export default {
 			height: 700px;
 			table-layout: fixed;
         }
+	.table thead td {
+			
+			font-size: 20px;
+
+        }
 	.table tbody td {
 			height: 130px;
 			font-size: 15px;

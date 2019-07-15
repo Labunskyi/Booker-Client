@@ -64,18 +64,52 @@ export default {
 		users: ['vasya', 'miha'],
 		id: this.$router.currentRoute.params['id'],
 		event: [],
+		
 	}
   },
   created(){
 	this.getEventById(this.id);
-	
   },
   methods: {
 	update() {
-	
+		const data = {
+			id: this.event.id,
+			start_time: this.event.date + ' ' + this.event.start_time + ':' + '00',
+			end_time: this.event.date + ' ' + this.event.end_time + ':' + '00',
+			description: this.event.description,
+		},
+		formatdata = JSON.stringify(data)
+		this.$http.put('http://booker.local/Server/api/events/eventedit/', formatdata)
+		.then(function(response) {
+		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
+        let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
+        alert('The event '+time1+ '-'+time2+' was updated. The text for this event is: '+this.event.description);
+		this.$router.push('/')
+		return response.json();
+		})
+		.then(formData => {
+			this.formData = formData
+			
+		})
 	},
+	digitTime(date){
+        return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })
+      },
 	remove() {
-	
+
+		if (confirm('Confirm deleting event № ' + this.event.id)) {
+			this.$http.delete('http://booker.local/Server/api/events/event/' + this.id)
+			.then(function(response) {
+			this.$router.push('/')
+			return response.json();
+			})
+			.then(formData => {
+				this.formData = formData
+				
+			})
+		} else {
+			return
+		}
 	},
 	getEventById(id){
 		this.$http.get('http://booker.local/Server/api/events/eventbyid/' + this.id)
@@ -86,7 +120,6 @@ export default {
 					this.event = event[0];
 					this.event.start_time = this.event.start_time.substring(11);
 					this.event.end_time = this.event.end_time.substring(11);
-					console.log(event);
 				})
 	}
   
