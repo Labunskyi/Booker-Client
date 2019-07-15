@@ -46,16 +46,12 @@
 		
 		}
 		if (this.username != "" && this.password != "") {
-		this.$http.post('http://rest-classwork.local/Server/api/users/userslogin/', data)
-		.then( function(response) {
+		this.$http.post('http://booker.local/Server/api/users/userslogin/', data)
+		.then(function(response) {
 			
 			if (response.body) {
-				
 				localStorage.setItem("user", JSON.stringify(response.body));
 				var user = JSON.parse(localStorage.getItem("user"));
-				//loginForm.style.display = 'none';
-				//document.getElementById("login-register").style.display = 'none';
-				//userInfo.style.display = 'block';
 				this.$router.push('/')
 				return response.json()
 			} else { 

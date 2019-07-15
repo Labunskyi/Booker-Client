@@ -2,7 +2,7 @@
 	<div class="conteiner pt-2">
 
 		<div>
-			<span>{{ date | date('datetime') }}</span>
+			<span>Local time: {{ time | date('datetime' + format) }}</span>
 			<h2>Booker</h2>
 		</div>
 		<div class="form-group row">
@@ -11,22 +11,39 @@
 				<table class="table table-bordered">
 					<thead>
 					<tr>
-						<td>
+						<td align="center">
 							<button class="btn btn-default" v-on:click="decrease"> << </button>
 						</td>
-						<td colspan="5"> {{ monthes[month] }} {{ year }} <td>
+						<td colspan="5" align="center"> {{ monthes[month] }} {{ year }} </td>
+						<td align="center">
 							<button class="btn btn-default" v-on:click="increase"> >> </button>
 						</td>
 					</tr>
 					<tr >
-						<td v-for="d in day"> {{ d }} </td>
+						<td v-for="(d, index) in day" :key="index"> {{ d }} </td>
 					</tr>
 					</thead>
 					
 					<tbody>
 
-					   <tr v-for="week in calendar2()">
-							<td v-for="day in week" :style="{'color': day.visible, 'background-color': day.current}"> {{ day.index }} </td>
+					   <tr v-for="(week, index) in calendar()" :key="index">
+						<router-link	
+								tag="td"
+								v-for="(day, index) in week" 
+								:to="'/eventcreate/' + day.date"
+								:key="index"
+								:style="{'color': day.visible, 'background-color': day.current}"
+							> {{ day.index }} 
+							<ul class="event-list">
+							  <li v-for="(event, index) in day.events" :key="index">
+								
+								  <router-link :to="'/eventedit/' + event.id" >
+									{{ event.start_time | date('time' + format) }} - {{ event.end_time | date('time' + format) }}
+								  </router-link>
+								
+							  </li>
+							</ul>
+							</router-link>
 						</tr>
 						
 						
@@ -36,17 +53,14 @@
 			<div class="col-md-2 form-group">
 				<div class="user-form">
 				   <div class="user-info" id='user-info'>
-						Hello, <span name="infoUsername"> {{ name }}</span>
-						<br>
+						<h4>Hello, {{ name }}</h4>
+						
 						<button type="submit" class="btn btn-primary" v-on:click="logout()">Logout</button>
 					</div>	
 				</div>
-				<div class='login-register' id='login-register'>
-					<router-link :to="'/login'" class="btn btn-primary" role="button" aria-pressed="true">Login</router-link>
-					<router-link :to="'/register'" class="btn btn-primary" role="button" aria-pressed="true">Register</router-link>
-				</div>
+			
 				
-				<div>
+				<div class="format-week">
 					<h4>Format week</h4>
 					<div class="custom-control custom-radio">
 					  <input type="radio" value="1" v-model="dFirstMonth" id="customRadio1" name="customRadio" class="custom-control-input">
@@ -55,6 +69,17 @@
 					<div class="custom-control custom-radio">
 					  <input type="radio" value="0" v-model="dFirstMonth" id="customRadio2" name="customRadio" class="custom-control-input">
 					  <label class="custom-control-label" for="customRadio2">Sunday</label>
+					</div>
+				</div>
+				<div class="format-time">
+					<h4>Format time</h4>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="format" v-model="format" id="customRadio3" name="Radio" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio3">12 h</label>
+					</div>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="" v-model="format" id="customRadio4" name="Radio" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio4">24 h</label>
 					</div>
 				</div>
 			</div>
@@ -72,16 +97,23 @@ export default {
 		month: new Date().getMonth(),    
         year: new Date().getFullYear(), 
         dFirstMonth: '1',
-        day:["Пн", "Вт","Ср","Чт","Пт","Сб", "Вс"],
+        day:["Mn", "Tu","We","Th","Fr","Sa", "Su"],
         days: [],
-		monthes: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
-		date: new Date(),
-		name: ''
+		monthes: ["January","February","March","April","May","June","July","August","September","Oktober","November","December"],
+		time: new Date(),
+		name: '',
+		events: [],
+		eventsByDay: [],
+		format: 'format',
 
 	}
   },
+  created() {
+   this.getEvents();
+
+  },
   methods: {
-	calendar2: function(){
+	calendar: function(){
 			var days = [];
 			var week = 0;
 			days[week] = [];
@@ -90,15 +122,22 @@ export default {
 			var dLastPrMonth = (new Date(this.year, this.month, 0).getDate() + 1);
                 for (let i = 1; i <= dlast; i++) {
                     if (new Date(this.year, this.month, i).getDay() != this.dFirstMonth) {
-						var a = {index: i, visible: ''};
+						var a = {index: i,
+								 date: this.formatDate(new Date(this.year, this.month, i)),
+								 events: this.getEvent(this.formatDate(new Date(this.year, this.month, i))),
+								 visible: ''};
                         days[week].push(a);
 						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = 'red'};
                         }
                      else {
                         week++;
                         days[week] = [];
-                        var a = {index: i, visible: ''};
+                        var a = {index: i,
+								 date: this.formatDate(new Date(this.year, this.month, i)),
+								 events: this.getEvent(this.formatDate(new Date(this.year, this.month, i))),
+								 visible: ''};
                         days[week].push(a);
+						
                         }
                     }
 				if (days[0].length == 0) {
@@ -132,33 +171,69 @@ export default {
                         this.year++;
                     }
             },
+			formatDate: function(date) {
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				month = month < 10 ? "0" + month : "" + month;
+				let day = date.getDate();
+				day = day < 10 ? "0" + day : "" + day;
+				return "" + year + "-" + month + "-" + day;
+			  },
 			logout: function() {
 				localStorage.clear()
 				this.$router.push('/login')
 			},
-			
+			getEvents: function(){
+				this.$http.get('http://booker.local/Server/api/events/events/')
+				.then(function(response) {
+				return response.json()
+				})
+				.then(events => {
+					this.events = events;
+				})
+			},
+			getEvent: function(date) {
+	 
+				  let events = this.events.filter((event) =>
+					this.isEqualsDays(event.date, date));
+				  if (events.length > 0) {
+					return events;
+				  }
+				  return false;
+				},
+				
+			isEqualsDays: function(date1, date2) {
+				  if (date1 === date2) {
+					return true
+				  } else {
+					return false
+				  }
+				},
 			
         },
+		
+		
 		computed: {
             dayChange: function(){
                 if(this.dFirstMonth == 0){
-                    this.day = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+                    this.day = ["Su", "Mn", "Tu","We","Th","Fr","Sa"]
                 }else{
-                    this.day = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+                    this.day = ["Mn", "Tu","We","Th","Fr","Sa", "Su"]
                 }
             },
 			
 		},
 		mounted(){
   			this.interval = setInterval(() =>{
-				this.date = new Date()
+				this.time = new Date()
 			}, 1000)
 			var user = JSON.parse(localStorage.getItem("user"));
 			this.name = user.username
 		},
 		beforeDestroy(){
   			clearInterval(this.interval)
-		}
+		},
+		
 }
 </script>
 
@@ -166,19 +241,31 @@ export default {
 	h2 { 
 			text-align: center;
 		}
-	.table{
+	li {
+		list-style-type: none;
+		}
+	ul {
+		 margin: 0;
+		 padding: 0; 
+		}
+	.table {
 			border-collapse: collapse;
 			margin-left: auto;
 			margin-right: auto;
-			width: 700px;
+			width: 850px;
 			height: 700px;
-			
+			table-layout: fixed;
         }
-	.btn {
-			margin-right: 5px;
-			
+	.table tbody td {
+			height: 130px;
+			font-size: 15px;
+			margin: 0;
+			padding: 0;
         }
-	.login-register{
-            display: block;
-        }
+	.format-week  {
+			margin-top: 40px;
+	}
+	.format-time  {
+			margin-top: 20px;
+	}
 </style>

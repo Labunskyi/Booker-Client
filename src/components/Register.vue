@@ -42,7 +42,6 @@ export default {
   methods: {
 	
 	register() {
-
 		const formData = {
 			username: this.username,
 			password: this.password
@@ -74,7 +73,4 @@ export default {
 
 <style scoped>
 	
-
 </style>
-
-
