@@ -30,7 +30,7 @@
 						<router-link	
 								tag="td"
 								v-for="(day, index) in week" 
-								:to="'/eventcreate/' + day.date"
+								:to="'/eventcreate/' + day.room + '/' + day.date"
 								:key="index"
 								:style="{'color': day.visible, 'background-color': day.current}"
 							> {{ day.index }} 
@@ -51,14 +51,12 @@
 				</table>
 			</div>
 			<div class="col-md-2 form-group">
-				<div class="user-form">
+
 				   <div class="user-info" id='user-info'>
 						<h4>Hello, {{ name }}</h4>
-						
 						<button type="submit" class="btn btn-primary" v-on:click="logout()">Logout</button>
 					</div>	
-				</div>
-			
+
 				
 				<div class="format-week">
 					<h4>Format week</h4>
@@ -80,6 +78,21 @@
 					<div class="custom-control custom-radio">
 					  <input type="radio" value="" v-model="format" id="customRadio4" name="Radio" class="custom-control-input">
 					  <label class="custom-control-label" for="customRadio4">24 h</label>
+					</div>
+				</div>
+				<div class="format-rooms">
+					<h4>Rooms</h4>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="1" v-model="room" id="customRadio5" name="Room" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio5">Main boardroom</label>
+					</div>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="2" v-model="room" id="customRadio6" name="Room" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio6">Meeting room</label>
+					</div>
+					<div class="custom-control custom-radio">
+					  <input type="radio" value="3" v-model="room" id="customRadio7" name="Room" class="custom-control-input">
+					  <label class="custom-control-label" for="customRadio7">Small meeting room</label>
 					</div>
 				</div>
 			</div>
@@ -105,13 +118,11 @@ export default {
 		events: [],
 		eventsByDay: [],
 		format: 'format',
+		room: '1'
 
 	}
   },
-  created() {
-   this.getEvents();
 
-  },
   methods: {
 	calendar: function(){
 			var days = [];
@@ -125,8 +136,10 @@ export default {
 						var a = {index: i,
 								 date: this.formatDate(new Date(this.year, this.month, i)),
 								 events: this.getEvent(this.formatDate(new Date(this.year, this.month, i))),
+								 room: this.room,
 								 visible: ''};
                         days[week].push(a);
+						
 						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = 'red'};
                         }
                      else {
@@ -135,6 +148,7 @@ export default {
                         var a = {index: i,
 								 date: this.formatDate(new Date(this.year, this.month, i)),
 								 events: this.getEvent(this.formatDate(new Date(this.year, this.month, i))),
+								 room: this.room,
 								 visible: ''};
                         days[week].push(a);
 						
@@ -150,6 +164,7 @@ export default {
 					}
 				}
 				this.dayChange;
+				
 				return days;
 			},
             decrease: function(){
@@ -183,23 +198,28 @@ export default {
 				localStorage.clear()
 				this.$router.push('/login')
 			},
-			getEvents: function(){
-				this.$http.get('http://booker.local/Server/api/events/events/')
+			getEvents: function(room){
+				this.$http.get('http://booker.local/Server/api/events/events/'+ this.room)
 				.then(function(response) {
-				return response.json()
+				return response.json() 
+				
+				console.log(response);
 				})
 				.then(events => {
 					this.events = events;
 				})
 			},
 			getEvent: function(date) {
-	 
-				  let events = this.events.filter((event) =>
-					this.isEqualsDays(event.date, date));
-				  if (events.length > 0) {
-					return events;
-				  }
-				  return false;
+				  if (this.events) {
+						  let events = this.events.filter((event) =>
+							this.isEqualsDays(event.date, date));
+						  if (events.length > 0) {
+							return events;
+						  }
+						  return false;
+					} else {
+						return 
+					}
 				},
 				
 			isEqualsDays: function(date1, date2) {
@@ -226,7 +246,8 @@ export default {
 		mounted(){
   			this.interval = setInterval(() =>{
 				this.time = new Date()
-			}, 1000)
+				this.getEvents(this.room);
+			}, 500)
 			var user = JSON.parse(localStorage.getItem("user"));
 			this.name = user.username
 		},
@@ -271,6 +292,9 @@ export default {
 			margin-top: 40px;
 	}
 	.format-time  {
+			margin-top: 20px;
+	}
+	.format-rooms  {
 			margin-top: 20px;
 	}
 </style>

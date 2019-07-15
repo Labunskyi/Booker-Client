@@ -19,7 +19,7 @@ export default new VueRouter({
 			component: Login
 		},
 		{
-			path: '/eventcreate/:date',
+			path: '/eventcreate/:room/:date',
 			component: EventCreate
 		},
 		{

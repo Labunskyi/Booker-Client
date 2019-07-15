@@ -118,7 +118,7 @@ export default {
 			is_recurring: "false",
 			period: "",
 			duration_recurring: "",
-			idroom: "1"
+			idroom: this.$router.currentRoute.params['room'],
       }
     };
   },
