@@ -1,5 +1,5 @@
 <template>
-<div class="container pt-2">
+<div class="container pt-5">
 	<div class="form-group row">			
 		<div class="col-md-3" >
 			<router-link :to="'/'" class="btn btn-primary" role="button" aria-pressed="true">Back</router-link>
@@ -97,9 +97,12 @@ export default {
       },
 	remove() {
 
-		if (confirm('Confirm deleting event № ' + this.event.id)) {
+		if (confirm('Confirm removing event № ' + this.event.id)) {
 			this.$http.delete('http://booker.local/Server/api/events/event/' + this.id)
 			.then(function(response) {
+			let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
+			let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
+			alert('The event '+time1+ '-'+time2+' has been removed.');
 			this.$router.push('/')
 			return response.json();
 			})

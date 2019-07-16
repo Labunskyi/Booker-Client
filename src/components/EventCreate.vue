@@ -1,23 +1,16 @@
 <template>
-   <div class="container pt-2">
+   <div class="container pt-5">
 		<div class="form-group row">
 			
 		<div class="col-md-3" >
 			<router-link :to="'/'" class="btn btn-primary" role="button" aria-pressed="true">Back</router-link>
 		</div>
-		<div class="col-md-9" >
+		<div class="col-md-5" >
       <p>
          1. Booked for
       </p>
       <div class="form-group">
-         <select class="form-control" name="user" id="user" v-model="event.iduser">
-            <option v-for="(user, index) in users" 
-            :key="index" 
-            v-bind:value="user.id"
-           >
-              {{ user }}
-            </option>
-        </select>
+         {{this.email}}
       </div>
       <p>
          2. I would like to book this meeting:
@@ -26,10 +19,22 @@
 	  <input type="hidden" name="date" v-model="event.date"/>
          {{ event.date }}
       </p>
-      <p>
-         3. Specify what the time and end of the meeting. 
+      
+	  <p>
+         3. Select:
+      </p>
+			<select class="form-control" v-model="event.idroom">
+				<option :value="1">Main boardroom</option>
+				<option :value="2">Meeting room</option>
+				<option :value="3">Small meeting room</option>
+			</select>
+		<p>
+         4. Specify what the time and end of the meeting. 
          (This will be what people see on the calendar).
       </p>
+	  <p>
+	  <input type="date" >
+	  </p>
       <p>
          <input type="time" name="start_time" 
          min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" required v-model="event.start_time">
@@ -39,7 +44,7 @@
         min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" required v-model="event.end_time">
       </p>
       <p>
-         4. Enter the specifics for the meeting.
+         5. Enter the specifics for the meeting.
          (This will be what people see when they click on the event link).
       </p>
       <p>
@@ -47,7 +52,7 @@
         </textarea>
       </p>
       <p>
-         5. Is this going to be a recurring event?
+         6. Is this going to be a recurring event?
       </p>
 	  <div class="is-recuring">
 					
@@ -63,7 +68,7 @@
       
       <div v-if="event.is_recurring=='true'" class="recurring">
         <p>
-         6. If it is recurring, specify weekly, bi-weekly, or monthly.
+         7. If it is recurring, specify weekly, bi-weekly, or monthly.
       </p>
 	  <div class="recuring">
 		  <div class="custom-control custom-radio">
@@ -95,6 +100,9 @@
         <button class="btn btn-primary" @click="saveEvent">Submit</button>
       </p>
 	  </div>
+	  <div class="col-md-4" >
+			
+	  </div>
     </div>
 </div>
 </template>
@@ -105,11 +113,10 @@ export default {
 
   data() {
     return {
-		
-		users: ['mike', 'vasya'],
+
 		event: {
 		
-			iduser: '1', //calendar.user.id,
+			iduser: this.getUserId(), 
 			idrec: '0',
 			date: this.$router.currentRoute.params['date'],
 			start_time: "",
@@ -118,12 +125,12 @@ export default {
 			is_recurring: "false",
 			period: "",
 			duration_recurring: "",
-			idroom: this.$router.currentRoute.params['room'],
+			idroom: '1',
       }
     };
   },
   created() {
-  
+	this.getUserId()
   },
   computed: {
    
@@ -132,7 +139,12 @@ export default {
     }
   },
   methods: {
-  
+	getUserId(){
+		var user = JSON.parse(localStorage.getItem("user"));
+		this.id = user.id
+		this.email = user.email
+		return this.id
+	},
     saveEvent() {
 
       let data = this.transformFields();

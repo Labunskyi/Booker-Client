@@ -2,7 +2,7 @@
 	<div class="conteiner pt-2">
 
 		<div>
-			<span>Local time: {{ time | date('datetime' + format) }}</span>
+			<span>Local time:</span>
 			<h2>Booker</h2>
 		</div>
 		<div class="form-group row">
@@ -27,10 +27,11 @@
 					<tbody>
 
 					   <tr v-for="(week, index) in calendar()" :key="index">
-						<router-link	
+					   
+						<router-link 	
 								tag="td"
-								v-for="(day, index) in week" 
-								:to="'/eventcreate/' + day.room + '/' + day.date"
+								v-for="(day, index) in week"
+								:to="'/eventcreate/' + day.date"
 								:key="index"
 								:style="{'color': day.visible, 'background-color': day.current}"
 							> {{ day.index }} 
@@ -38,12 +39,12 @@
 							  <li v-for="(event, index) in day.events" :key="index">
 								
 								  <router-link :to="'/eventedit/' + event.id" >
-									{{ event.start_time | date('time' + format) }} - {{ event.end_time | date('time' + format) }}
+									{{ event.start_time  }} - {{ event.end_time }}
 								  </router-link>
 								
 							  </li>
 							</ul>
-							</router-link>
+						</router-link>
 						</tr>
 						
 						
@@ -95,6 +96,9 @@
 					  <label class="custom-control-label" for="customRadio7">Small meeting room</label>
 					</div>
 				</div>
+				<div class="format-employee">
+					<router-link :to="'/employee/list'" class="btn btn-primary" role="button" aria-pressed="true">Employee list</router-link>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -113,7 +117,7 @@ export default {
         day:["Mn", "Tu","We","Th","Fr","Sa", "Su"],
         days: [],
 		monthes: ["January","February","March","April","May","June","July","August","September","Oktober","November","December"],
-		time: new Date(),
+
 		name: '',
 		events: [],
 		eventsByDay: [],
@@ -202,8 +206,6 @@ export default {
 				this.$http.get('http://booker.local/Server/api/events/events/'+ this.room)
 				.then(function(response) {
 				return response.json() 
-				
-				console.log(response);
 				})
 				.then(events => {
 					this.events = events;
@@ -245,7 +247,7 @@ export default {
 		},
 		mounted(){
   			this.interval = setInterval(() =>{
-				this.time = new Date()
+
 				this.getEvents(this.room);
 			}, 500)
 			var user = JSON.parse(localStorage.getItem("user"));
@@ -295,6 +297,9 @@ export default {
 			margin-top: 20px;
 	}
 	.format-rooms  {
+			margin-top: 20px;
+	}
+	.format-employee  {
 			margin-top: 20px;
 	}
 </style>

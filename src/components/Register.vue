@@ -47,19 +47,22 @@ export default {
 			password: this.password
 		}
 		if (this.username && this.password){
-		this.$http.post('http://rest-classwork.local/Server/api/users/users/', formData)
+		this.$http.post('http://booker.local/Server/api/users/users/', formData)
 		.then(response => {
 			
-			this.$router.push('/login')
+			
 			return response.json()
 		})
 		.then(formData => {
 			
 			this.formData = formData
 			if (formData.name) {
+				this.$router.push('/login')
 				return true
 			} else { 
 				alert("The name is already used!"); 
+				this.username = ''
+				this.password = ''
 			}
 			
 		})

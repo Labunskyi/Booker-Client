@@ -12,11 +12,15 @@
 					
 					<div>
 						<label for="username">Username</label>
-						<input type="text" class="form-control" v-model.trim="username">
+						<input type="text" class="form-control" autocomplete="username" v-model.trim="username">
+					</div>
+					<div>
+						<label for="username">Email</label>
+						<input type="email" class="form-control" autocomplete="email" v-model.trim="email">
 					</div>
 					<div class="form-group">
 						<label for="login-password">Password</label>
-						<input type="password" class="form-control" v-model="password">
+						<input type="password" class="form-control" autocomplete="password" v-model="password">
 					</div>
 					<button type="submit" class="btn btn-primary" @click="login">Login</button>
 					
@@ -34,7 +38,8 @@
   data() {
 	return {
 		username: '',
-		password: ''
+		password: '',
+		email: ''
 	}
   },
   methods: {
@@ -42,10 +47,11 @@
 	login() {
 		const data = {
 			username: this.username,
-			password: this.password
+			password: this.password,
+			email: this.email
 		
 		}
-		if (this.username != "" && this.password != "") {
+		if (this.username != "" && this.password != "" && this.email != "") {
 		this.$http.post('http://booker.local/Server/api/users/userslogin/', data)
 		.then(function(response) {
 			
@@ -56,7 +62,7 @@
 				return response.json()
 			} else { 
 			
-				alert("Wrong name or password"); 
+				alert("Wrong email or password or username"); 
 			}
 		})
 		.then(formData => {
@@ -65,7 +71,7 @@
 			
 		})
 		} else {
-        alert("A username and password must be present");
+        alert("A username, email and password must be present");
       }
 	}
   }
