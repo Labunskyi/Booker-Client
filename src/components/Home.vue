@@ -2,7 +2,7 @@
 	<div class="conteiner pt-2">
 
 		<div>
-			<span>Local time:</span>
+			<span>Local time: {{ date | date('datetime' + format)}}</span>
 			<h2>Booker</h2>
 		</div>
 		<div class="form-group row">
@@ -39,7 +39,7 @@
 							  <li v-for="(event, index) in day.events" :key="index">
 								
 								  <router-link :to="'/eventedit/' + event.id" >
-									{{ event.start_time  }} - {{ event.end_time }}
+									{{ event.start_time | date('time' + format) }} - {{ event.end_time | date('time' + format)}}
 								  </router-link>
 								
 							  </li>
@@ -81,7 +81,7 @@
 					  <label class="custom-control-label" for="customRadio4">24 h</label>
 					</div>
 				</div>
-				<div class="format-rooms">
+				<div class="format-rooms" >
 					<h4>Rooms</h4>
 					<div class="custom-control custom-radio">
 					  <input type="radio" value="1" v-model="room" id="customRadio5" name="Room" class="custom-control-input">
@@ -96,7 +96,7 @@
 					  <label class="custom-control-label" for="customRadio7">Small meeting room</label>
 					</div>
 				</div>
-				<div class="format-employee">
+				<div class="format-employee" v-if="name == 'admin'">
 					<router-link :to="'/employee/list'" class="btn btn-primary" role="button" aria-pressed="true">Employee list</router-link>
 				</div>
 			</div>
@@ -117,7 +117,8 @@ export default {
         day:["Mn", "Tu","We","Th","Fr","Sa", "Su"],
         days: [],
 		monthes: ["January","February","March","April","May","June","July","August","September","Oktober","November","December"],
-
+		date: new Date(),
+		interval: null,
 		name: '',
 		events: [],
 		eventsByDay: [],
@@ -236,8 +237,12 @@ export default {
 				},
 			
         },
-		
-		
+		filters: {
+			formatTime(date) {
+			let options = { hour: "2-digit", minute: "2-digit" };
+			return date.toLocaleTimeString("en-US", options);
+			},
+		},
 		computed: {
             dayChange: function(){
                 if(this.dFirstMonth == 0){
@@ -250,7 +255,7 @@ export default {
 		},
 		mounted(){
   			this.interval = setInterval(() =>{
-
+				this.date = new Date();
 				this.getEvents(this.room);
 			}, 500)
 			var user = JSON.parse(localStorage.getItem("user"));

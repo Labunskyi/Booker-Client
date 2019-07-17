@@ -3,7 +3,7 @@
 		<div class="form-group row">
 			
 		<div class="col-md-3" >
-			<router-link :to="'/'" class="btn btn-primary" role="button" aria-pressed="true">Home</router-link>
+		
 		</div>
 		<div class="col-md-3" >			
 			<div class="login" id="login">
@@ -57,7 +57,7 @@
 			
 			if (response.body) {
 				localStorage.setItem("user", JSON.stringify(response.body));
-				var user = JSON.parse(localStorage.getItem("user"));
+				var user = JSON.parse(localStorage.getItem("user") || '[]');
 				this.$router.push('/')
 				return response.json()
 			} else { 
@@ -67,7 +67,7 @@
 		})
 		.then(formData => {
 			this.formData = formData
-			console.log(formData);
+
 			
 		})
 		} else {
