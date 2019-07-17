@@ -12,14 +12,6 @@
       <div class="form-group">
          {{this.email}}
       </div>
-      <p>
-         2. I would like to book this meeting:
-      </p>
-      <p>
-	  <input type="hidden" name="date" v-model="event.date"/>
-         {{ event.date }}
-      </p>
-      
 	  <p>
          3. Select:
       </p>
@@ -28,13 +20,18 @@
 				<option :value="2">Meeting room</option>
 				<option :value="3">Small meeting room</option>
 			</select>
+      <p>
+         2. I would like to book this meeting:
+      </p>
+      <p>
+	  <input type="date" v-model="event.date">
+	  </p>
+
 		<p>
          4. Specify what the time and end of the meeting. 
          (This will be what people see on the calendar).
       </p>
-	  <p>
-	  <input type="date" >
-	  </p>
+	 
       <p>
          <input type="time" name="start_time" 
          min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" required v-model="event.start_time">
@@ -119,8 +116,8 @@ export default {
 			iduser: this.getUserId(), 
 			idrec: '0',
 			date: this.$router.currentRoute.params['date'],
-			start_time: "",
-			end_time: "",
+			start_time: "08:00",
+			end_time: "08:00",
 			description: "",
 			is_recurring: "false",
 			period: "",

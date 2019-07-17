@@ -33,7 +33,7 @@
 								v-for="(day, index) in week"
 								:to="'/eventcreate/' + day.date"
 								:key="index"
-								:style="{'color': day.visible, 'background-color': day.current}"
+								:style="{'color': day.visible, 'background-color': day.current, 'pointer-events': day.cursor}"
 							> {{ day.index }} 
 							<ul class="event-list">
 							  <li v-for="(event, index) in day.events" :key="index">
@@ -141,10 +141,11 @@ export default {
 								 date: this.formatDate(new Date(this.year, this.month, i)),
 								 events: this.getEvent(this.formatDate(new Date(this.year, this.month, i))),
 								 room: this.room,
-								 visible: ''};
+								 visible: '',
+								 cursor: 'auto'};
                         days[week].push(a);
-						
-						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = 'red'};
+						if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) { a.current = '#cdcdef'};
+						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000'};
                         }
                      else {
                         week++;
@@ -155,16 +156,18 @@ export default {
 								 room: this.room,
 								 visible: ''};
                         days[week].push(a);
-						
+						if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) { a.current = '#cdcdef'};
+						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000'};
                         }
                     }
-				if (days[0].length == 0) {
-					days = days.splice(1);
-				}
+
 				if (days[0].length > 0) {
 					for (let i = days[0].length; i < 7; i++) {
-						dLastPrMonth -= 1;
-						days[0].unshift(dLastPrMonth);
+						var b = {index: undefined,
+								 visible: '',
+								 cursor: 'none'};
+						days[0].unshift(b);
+						
 					}
 				}
 				this.dayChange;
