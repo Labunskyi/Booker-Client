@@ -7,8 +7,8 @@
 		
 		<div class="col-md-6" >
 
-			<div class="event-panel">
-				<div class="event-detail">
+			
+				<div class="event-detail" v-if="this.name == this.event.username || this.name == 'admin'">
 				  
 				  <h2>Edit event</h2>
 				  <div class="time field">
@@ -24,17 +24,13 @@
 					<textarea class="form-control" cols="30" rows="2" v-model="event.description"></textarea>
 				  </div>
 				  <div class="field">
-					<label for="user">Who</label>
-					<div>
-						{{ event.iduser }}
-
-					</div>
+					<label for="user">Who: {{ event.username }}</label>
 				  </div>
 				  
 				  <div class="field">
-					<b>Submitted:</b> 
+					<p>Submitted: {{ event.created_time }}</p> 
 				  </div>
-
+					
 				  <div v-if="event.is_recurring" class="field">
 					<input id="isrec" type="checkbox" v-model="event.applyToAllRec"/>
 					<label for="isrec">Apply to all occurences?</label>
@@ -45,11 +41,30 @@
 					<button type="button" class="btn btn-danger" @click="remove">DELETE</button>
 				 </div>
        
-				</div>
 			</div>
+			<div class="event-detail" v-else>
+				  
+				  <h2>Event</h2>
+				  <div class="time field">
+					  <label for="time">When: </label>
+					  <span> {{ event.start_time }} </span> - <span> {{ event.end_time }} </span>
+				  </div>
+				  <div class="field">
+					<label for="description">Notes</label>
+					<span> {{ event.description }}</span>
+				  </div>
+				  <div class="field">
+					<label for="user">Who: {{ event.username }}</label>
+				  </div>
+				  
+				  <div class="field">
+					<p>Submitted: {{ event.created_time }}</p> 
+				  </div>       
+			</div>
+
 		</div>
 		<div class="col-md-3" >
-			
+
 		</div>
     </div>  
 </div>
@@ -69,6 +84,8 @@ export default {
   },
   created(){
 	this.getEventById(this.id);
+	var user = JSON.parse(localStorage.getItem("user"));
+	this.name = user.username
   },
   methods: {
 	update() {

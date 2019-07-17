@@ -7,37 +7,7 @@ import EmployeeList from './components/EmployeeList'
 import EmployeeAdd from './components/EmployeeAdd'
 import EmployeeEdit from './components/EmployeeEdit'
 import EmployeeRemove from './components/EmployeeRemove'
-import Register from './components/Register'
 import Page404 from './components/Page404'
-
-/* const isLogin = (to, from, next) => {
-  if (calendar.user) {
-    next()
-    return
-  }else{
-    let user = JSON.parse(localStorage.getItem('user') || '[]');
-    if (user){
-      user.is_active = (user.is_active === '1');
-      user.is_admin = (user.is_admin === '1');
-      calendar.user = user;
-      next()
-      return
-    }
-  }
-  next('/login')
-}; */
-
-/* const isLogin = (to, from, next) => {
-	let user = JSON.parse(localStorage.getItem('user') || '[]');
-	if (user.length !== 0) {
-		next()
-		return
-	} else {
-		this.$router.push('/login')
-		return
-	}	
-	next('/login')
-} */
 
 const isLogin = (to, from, next) => {
 	let user = JSON.parse(localStorage.getItem('user') || '[]');
@@ -69,10 +39,6 @@ export default new VueRouter({
 			path: '/eventedit/:id',
 			component: EventEdit,
 			beforeEnter: isLogin			
-		},
-		{
-			path: '/register',
-			component: Register
 		},
 		{
 			path: '/employee/list',

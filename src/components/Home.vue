@@ -36,7 +36,7 @@
 								:style="{'color': day.visible, 'background-color': day.current, 'pointer-events': day.cursor}"
 							> {{ day.index }} 
 							<ul class="event-list">
-							  <li v-for="(event, index) in day.events" :key="index">
+							  <li class="event-list" v-for="(event, index) in day.events" :key="index">
 								
 								  <router-link :to="'/eventedit/' + event.id" >
 									{{ event.start_time | date('time' + format) }} - {{ event.end_time | date('time' + format)}}
@@ -127,7 +127,10 @@ export default {
 
 	}
   },
-
+  created(){
+	var user = JSON.parse(localStorage.getItem("user"));
+	this.name = user.username
+  },
   methods: {
 	calendar: function(){
 			var days = [];
@@ -146,7 +149,7 @@ export default {
 								 cursor: 'auto'};
                         days[week].push(a);
 						if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) { a.current = '#cdcdef'};
-						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000'};
+						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000', a.cursor = 'none'};
                         }
                      else {
                         week++;
@@ -158,16 +161,16 @@ export default {
 								 visible: ''};
                         days[week].push(a);
 						if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) { a.current = '#cdcdef'};
-						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000'};
+						if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) { a.visible = '#ff0000', a.cursor = 'none'};
                         }
                     }
 
 				if (days[0].length > 0) {
 					for (let i = days[0].length; i < 7; i++) {
-						var b = {index: undefined,
+						var a = {index: undefined,
 								 visible: '',
 								 cursor: 'none'};
-						days[0].unshift(b);
+						days[0].unshift(a);
 						
 					}
 				}
@@ -237,12 +240,7 @@ export default {
 				},
 			
         },
-		filters: {
-			formatTime(date) {
-			let options = { hour: "2-digit", minute: "2-digit" };
-			return date.toLocaleTimeString("en-US", options);
-			},
-		},
+		
 		computed: {
             dayChange: function(){
                 if(this.dFirstMonth == 0){
@@ -258,8 +256,7 @@ export default {
 				this.date = new Date();
 				this.getEvents(this.room);
 			}, 500)
-			var user = JSON.parse(localStorage.getItem("user"));
-			this.name = user.username
+			
 		},
 		beforeDestroy(){
   			clearInterval(this.interval)
@@ -272,20 +269,21 @@ export default {
 	h2 { 
 			text-align: center;
 		}
-	li {
-		list-style-type: none;
-		}
 	ul {
 		 margin: 0;
 		 padding: 0; 
 		}
+	.event-list {
+		list-style-type: none;
+		font-size: 12px;
+		}
 	.table {
-			border-collapse: collapse;
-			margin-left: auto;
-			margin-right: auto;
-			width: 850px;
-			height: 700px;
-			table-layout: fixed;
+		border-collapse: collapse;
+		margin-left: auto;
+		margin-right: auto;
+		width: 850px;
+		height: 700px;
+		table-layout: fixed;
         }
 	.table thead td {
 			

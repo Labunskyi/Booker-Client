@@ -110,9 +110,9 @@ export default {
 
   data() {
     return {
+		currentdate: this.currentDate(), 
 
-		event: {
-		
+		event: { 
 			iduser: this.getUserId(), 
 			idrec: '0',
 			date: this.$router.currentRoute.params['date'],
@@ -127,7 +127,7 @@ export default {
     };
   },
   created() {
-	this.getUserId()
+
   },
   computed: {
    
@@ -145,12 +145,21 @@ export default {
     saveEvent() {
 
       let data = this.transformFields();
-	  
+	  if(this.event.date < this.currentdate) {
+			alert('Denied to book a boardroom for a date that has already passed'); 
+	  } else if (new Date(this.event.date).getDay() == 0 || new Date(this.event.date).getDay() == 6) {
+			alert('Denied to book a boardroom for a weekend date');
+	  } else if (this.event.start_time > this.event.end_time) {
+			alert('Denied to book a boardroom for this period. Start time should be more then end time');
+	  } else if (this.comperativeInterval()) {
+			alert('Denied to book a boardroom for this period. Min interval should be no less 30 minute');
+	  } else {
 	  this.$http.post('http://booker.local/Server/api/events/singleevent/', data)
 		.then(function(response) {
+		let boardroom = this.event.idroom;
 		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
         let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
-        alert('The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
+        alert('Boardroom ' + boardroom + '.' + ' The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
 		this.$router.push('/')
 		return response.json();
 		})
@@ -158,13 +167,36 @@ export default {
 			this.formData = formData
 			
 		})
+		} 
      
     },
+	
 	digitTime(date){
         return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })
       },
-	  
-	  
+	  currentDate(){
+		var today = new Date();
+		var dd = String(today.getDate()).padStart(2, '0');
+		var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+		var yyyy = today.getFullYear();
+
+		return yyyy + '-' + mm + '-' + dd;
+	  },
+	  comperativeInterval(){
+		var startTime = this.event.start_time;
+		var endTime = this.event.end_time;
+		var startStartTime = startTime.substring(0, 3);
+		var startEndTime = startTime.substring(3);
+		var endStartTime = endTime.substring(0, 3);
+		var endEndTime = endTime.substring(3);
+				if (startStartTime == endStartTime) {
+					if (endEndTime - startEndTime < 30) {
+						return true;
+					} else {
+						return false;
+					}
+				} else return false;
+	  },
 	 transformFields() {
       let eventCopy = Object.assign({}, this.event);
       let start_time='';
