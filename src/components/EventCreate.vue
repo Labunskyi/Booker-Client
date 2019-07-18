@@ -54,30 +54,30 @@
 	  <div class="is-recuring">
 					
 					<div class="custom-control custom-radio">
-					  <input name="Radio" type="radio" value="false" id="customRadio5" selected v-model="event.is_recurring" class="custom-control-input">
+					  <input name="Radio" type="radio" value="0" id="customRadio5" selected v-model="event.is_recurring" class="custom-control-input">
 					  <label class="custom-control-label" for="customRadio5">no</label>
 					</div>
 					<div class="custom-control custom-radio">
-					  <input name="Radio" type="radio" value="true" id="customRadio6" v-model="event.is_recurring" class="custom-control-input">
+					  <input name="Radio" type="radio" value="1" id="customRadio6" v-model="event.is_recurring" class="custom-control-input">
 					  <label class="custom-control-label" for="customRadio6">yes</label>
 					</div>
 	  </div>
       
-      <div v-if="event.is_recurring=='true'" class="recurring">
+      <div v-if="event.is_recurring== 1" class="recurring">
         <p>
          7. If it is recurring, specify weekly, bi-weekly, or monthly.
       </p>
 	  <div class="recuring">
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="weekly" type="radio" value="weekly" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="weekly" type="radio" value="0" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="weekly">weekly</label>
 		  </div>
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="bi-weekly" type="radio" value="bi-weekly" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="bi-weekly" type="radio" value="1" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="bi-weekly">bi-weekly</label>
 		  </div>
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="monthly" type="radio" value="monthly" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="monthly" type="radio" value="2" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="monthly">monthly</label>
 		  </div>
 	  </div>
@@ -113,15 +113,14 @@ export default {
 		currentdate: this.currentDate(), 
 
 		event: { 
-			iduser: this.getUserId(), 
-			idrec: '0',
+			iduser: this.getUserId(),
 			date: this.$router.currentRoute.params['date'],
 			start_time: "08:00",
 			end_time: "08:00",
 			description: "",
-			is_recurring: "false",
-			period: "",
-			duration_recurring: "",
+			is_recurring: "0",
+			period: "0",
+			duration_recurring: "1",
 			idroom: '1',
       }
     };

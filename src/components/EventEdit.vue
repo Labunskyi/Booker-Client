@@ -6,10 +6,30 @@
 		</div>
 		
 		<div class="col-md-6" >
-
-			
-				<div class="event-detail" v-if="this.name == this.event.username || this.name == 'admin'">
+		
+				<div class="event-detail" v-if="this.event.date < this.currentdate">
 				  
+				  <h2>Event</h2>
+				  
+				  <div class="time field">
+					  <label for="time">When: </label>
+					  <span> {{ event.start_time }} </span> - <span> {{ event.end_time }} </span>
+				  </div>
+				  <div class="field">
+					<label for="description">Notes</label>
+					<span> {{ event.description }}</span>
+				  </div>
+				  <div class="field">
+					<label for="user">Who: {{ event.username }}</label>
+				  </div>
+				  
+				  <div class="field">
+					<p>Submitted: {{ event.created_time }}</p> 
+				  </div>       
+       
+			   </div>
+			
+				<div class="event-detail" v-else-if="this.name == this.event.username || this.name == 'admin'">
 				  <h2>Edit event</h2>
 				  <div class="time field">
 					  <label for="time">When: </label>
@@ -40,10 +60,8 @@
 					<button type="button" class="btn btn-secondary" @click="update">UPDATE</button>
 					<button type="button" class="btn btn-danger" @click="remove">DELETE</button>
 				 </div>
-       
 			</div>
 			<div class="event-detail" v-else>
-				  
 				  <h2>Event</h2>
 				  <div class="time field">
 					  <label for="time">When: </label>
@@ -75,7 +93,7 @@
 export default {
   data() {
 	return {
-		
+		currentdate: this.currentDate(), 
 		users: ['vasya', 'miha'],
 		id: this.$router.currentRoute.params['id'],
 		event: [],
@@ -112,6 +130,14 @@ export default {
 	digitTime(date){
         return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })
       },
+	currentDate(){
+		var today = new Date();
+		var dd = String(today.getDate()).padStart(2, '0');
+		var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+		var yyyy = today.getFullYear();
+
+		return yyyy + '-' + mm + '-' + dd;
+	  },
 	remove() {
 
 		if (confirm('Confirm removing event № ' + this.event.id)) {

@@ -1,0 +1,7 @@
+<Limit GET POST PUT DELETE>
+    Allow from all
+</Limit>
+
+RewriteEngine On
+RewriteBase /api/
+RewriteRule (.*) http://booker.local/Server/api/$1 [P]
