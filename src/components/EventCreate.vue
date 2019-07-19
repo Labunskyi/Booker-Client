@@ -63,21 +63,21 @@
 					</div>
 	  </div>
       
-      <div v-if="event.is_recurring== 1" class="recurring">
+      <div v-if="event.is_recurring == 1" class="recurring">
         <p>
          7. If it is recurring, specify weekly, bi-weekly, or monthly.
       </p>
 	  <div class="recuring">
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="weekly" type="radio" value="0" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="weekly" type="radio" value="weekly" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="weekly">weekly</label>
 		  </div>
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="bi-weekly" type="radio" value="1" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="bi-weekly" type="radio" value="bi-weekly" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="bi-weekly">bi-weekly</label>
 		  </div>
 		  <div class="custom-control custom-radio">
-			 <input name="period" id="monthly" type="radio" value="2" v-model="event.period" class="custom-control-input">
+			 <input name="period" id="monthly" type="radio" value="monthly" v-model="event.period" class="custom-control-input">
 			 <label class="custom-control-label" for="monthly">monthly</label>
 		  </div>
 	  </div>
@@ -111,7 +111,7 @@ export default {
   data() {
     return {
 		currentdate: this.currentDate(), 
-
+		
 		event: { 
 			iduser: this.getUserId(),
 			date: this.$router.currentRoute.params['date'],
@@ -119,9 +119,9 @@ export default {
 			end_time: "08:00",
 			description: "",
 			is_recurring: "0",
-			period: "0",
-			duration_recurring: "1",
-			idroom: '1',
+			period: "",
+			duration_recurring: "",
+			idroom: '1'
       }
     };
   },
@@ -159,7 +159,7 @@ export default {
 		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
         let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
         alert('Boardroom ' + boardroom + '.' + ' The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
-		this.$router.push('/')
+		console.log(response)
 		return response.json();
 		})
 		.then(formData => {

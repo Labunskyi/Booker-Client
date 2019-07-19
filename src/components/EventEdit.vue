@@ -5,15 +5,15 @@
 			<router-link :to="'/'" class="btn btn-primary" role="button" aria-pressed="true">Back</router-link>
 		</div>
 		
-		<div class="col-md-6" >
+				<div class="col-md-6" >
 		
-				<div class="event-detail" v-if="this.event.date < this.currentdate">
+				<div class="event-detail" v-if="this.date < this.currentdate">
 				  
 				  <h2>Event</h2>
 				  
 				  <div class="time field">
 					  <label for="time">When: </label>
-					  <span> {{ event.start_time }} </span> - <span> {{ event.end_time }} </span>
+					  <span> {{ start_time }} </span> - <span> {{ end_time }} </span>
 				  </div>
 				  <div class="field">
 					<label for="description">Notes</label>
@@ -34,10 +34,10 @@
 				  <div class="time field">
 					  <label for="time">When: </label>
 					  <input type="time" id="start-time" name="start-time"
-							  min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" v-model="event.start_time"/>
+							  min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" v-model="start_time"/>
 								- 
 					  <input type="time" id="end-time" name="end-time"
-							  min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" v-model="event.end_time"/>
+							  min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" v-model="end_time"/>
 				  </div>
 				  <div class="field">
 					<label for="description">Notes</label>
@@ -65,7 +65,7 @@
 				  <h2>Event</h2>
 				  <div class="time field">
 					  <label for="time">When: </label>
-					  <span> {{ event.start_time }} </span> - <span> {{ event.end_time }} </span>
+					  <span> {{ start_time }} </span> - <span> {{ end_time }} </span>
 				  </div>
 				  <div class="field">
 					<label for="description">Notes</label>
@@ -94,9 +94,11 @@ export default {
   data() {
 	return {
 		currentdate: this.currentDate(), 
-		users: ['vasya', 'miha'],
 		id: this.$router.currentRoute.params['id'],
 		event: [],
+		start_time: '',
+		end_time: '',
+		date: ''
 		
 	}
   },
@@ -109,15 +111,15 @@ export default {
 	update() {
 		const data = {
 			id: this.event.id,
-			start_time: this.event.date + ' ' + this.event.start_time + ':' + '00',
-			end_time: this.event.date + ' ' + this.event.end_time + ':' + '00',
+			start_time: this.date + ' ' + this.start_time + ':' + '00',
+			end_time: this.date + ' ' + this.end_time + ':' + '00',
 			description: this.event.description,
 		},
 		formatdata = JSON.stringify(data)
 		this.$http.put('http://booker.local/Server/api/events/eventedit/', formatdata)
 		.then(function(response) {
-		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
-        let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
+		let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
+        let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
         alert('The event '+time1+ '-'+time2+' was updated. The text for this event is: '+this.event.description);
 		this.$router.push('/')
 		return response.json();
@@ -143,8 +145,8 @@ export default {
 		if (confirm('Confirm removing event № ' + this.event.id)) {
 			this.$http.delete('http://booker.local/Server/api/events/event/' + this.id)
 			.then(function(response) {
-			let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
-			let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
+			let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
+			let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
 			alert('The event '+time1+ '-'+time2+' has been removed.');
 			this.$router.push('/')
 			return response.json();
@@ -163,9 +165,11 @@ export default {
 				return response.json()
 				})
 				.then(event => {
+					
 					this.event = event[0];
-					this.event.start_time = this.event.start_time.substring(11);
-					this.event.end_time = this.event.end_time.substring(11);
+					this.start_time = this.event.start_time.substring(11);
+					this.end_time = this.event.end_time.substring(11);
+					this.date = this.event.start_time.substring(0, 10);
 				})
 	}
   

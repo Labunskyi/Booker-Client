@@ -221,7 +221,7 @@ export default {
 			getEvent: function(date) {
 				  if (this.events) {
 						  let events = this.events.filter((event) =>
-							this.isEqualsDays(event.date, date));
+							this.isEqualsDays(event.start_time.substring(0, 10), date));
 						  if (events.length > 0) {
 							return events;
 						  }
