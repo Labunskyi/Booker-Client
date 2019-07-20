@@ -34,11 +34,11 @@
 	 
       <p>
          <input type="time" name="start_time" 
-         min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" required v-model="event.start_time">
+         min="08:00" max="20:00" step="1800" required v-model="event.start_time">
       </p>
       <p>
         <input type="time" name="end_time" 
-        min="08:00" max="20:00" step="1800" pattern="[0-9]{2}:[0-9]{2}" required v-model="event.end_time">
+        min="08:00" max="20:00" step="1800" required v-model="event.end_time">
       </p>
       <p>
          5. Enter the specifics for the meeting.
@@ -94,7 +94,7 @@
       </div>
       
       <p>
-        <button class="btn btn-primary" @click="saveEvent">Submit</button>
+        <button class="btn btn-primary submit" @click="saveEvent">Submit</button>
       </p>
 	  </div>
 	  <div class="col-md-4" >
@@ -119,7 +119,7 @@ export default {
 			end_time: "08:00",
 			description: "",
 			is_recurring: "0",
-			period: "",
+			period: "weekly",
 			duration_recurring: "",
 			idroom: '1'
       }
@@ -150,20 +150,27 @@ export default {
 			alert('Denied to book a boardroom for a weekend date');
 	  } else if (this.event.start_time > this.event.end_time) {
 			alert('Denied to book a boardroom for this period. Start time should be more then end time');
+	  } else if (this.event.start_time < '08:00' || this.event.end_time > '20:00') {
+			alert("Denied to book a boardroom for this period. Booking time should be between 08:00 and 20:00 o'clock");
 	  } else if (this.comperativeInterval()) {
 			alert('Denied to book a boardroom for this period. Min interval should be no less 30 minute');
 	  } else {
 	  this.$http.post('http://booker.local/Server/api/events/singleevent/', data)
 		.then(function(response) {
-		let boardroom = this.event.idroom;
-		let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
-        let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
-        alert('Boardroom ' + boardroom + '.' + ' The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
-		console.log(response)
-		return response.json();
+			if (response.body.errors == undefined) {
+				let boardroom = this.event.idroom;
+				let time1 = this.digitTime(new Date(this.event.date + ' ' + this.event.start_time));
+				let time2 =  this.digitTime(new Date(this.event.date + ' ' + this.event.end_time));
+				alert('Boardroom ' + boardroom + '.' + ' The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
+				this.$router.push('/')
+				return response.json();
+			} else if (response.body.errors == 'This time is already booked!') {
+				alert('This time is already booked!');
+			} else if (response.body.errors == 'Duration limit exceeded') {
+				alert('Duration limit exceeded');
+			} 
 		})
 		.then(formData => {
-			this.formData = formData
 			
 		})
 		} 
@@ -218,5 +225,7 @@ export default {
 </script>
 
 <style>
-
+	.submit {
+		margin-top: 15px;
+	}
 </style>
