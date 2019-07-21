@@ -52,7 +52,7 @@
 				  </div>
 					
 				  <div v-if="event.is_recurring == 1" class="field">
-					<input id="isrec" type="checkbox" v-model="event.applyToAllRec"/>
+					<input id="isrec" type="checkbox" v-model="applyToAllRec"/>
 					<label for="isrec">Apply to all occurences?</label>
 				  </div>
 				  
@@ -94,6 +94,7 @@ export default {
   data() {
 	return {
 		currentdate: this.currentDate(), 
+		applyToAllRec: false,
 		id: this.$router.currentRoute.params['id'],
 		event: [],
 		start_time: '',
@@ -107,11 +108,6 @@ export default {
 	var user = JSON.parse(localStorage.getItem("user"));
 	this.name = user.username
   },
-  watch: {
-    id: function(val) {
-      this.setFields();
-    }
-  },
   methods: {
 	update() {
 		const data = {
@@ -119,29 +115,31 @@ export default {
 			start_time: this.date + ' ' + this.start_time + ':' + '00',
 			end_time: this.date + ' ' + this.end_time + ':' + '00',
 			description: this.event.description,
-			idroom: this.event.idroom
+			idroom: this.event.idroom,
+			idrec: this.event.idrec,
+			iduser: this.event.iduser,
+			is_recurring: this.event.is_recurring,
+			applyToAllRec: this.applyToAllRec,
 		},
 		formatdata = JSON.stringify(data)
 		this.$http.put('http://booker.local/Server/api/events/eventedit/', formatdata)
 		.then(function(response) {
-		if (response.body.errors == undefined) {
-			let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
-			let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
-			alert('The event '+time1+ '-'+time2+' was updated. The text for this event is: '+this.event.description);
-			console.log(response);
-			return response.json();
-		} else if (response.body.errors == 'This time is already booked!') {
+			if (response.body.errors == undefined) {
+				let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
+				let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
+				alert('The event '+time1+ '-'+time2+' was updated. The text for this event is: '+this.event.description);
+				this.$router.push('/')
+				return response.json();
+			} else if (response.body.errors == 'This time is already booked!') {
 				alert('This time is already booked!');
-			}
+			} 
 		})
 		.then(formData => {
 			this.formData = formData
 			
 		})
 	},
-	setFields() {
-      this.$set(this.event, "applyToAllRec", false);
-    },
+
 	digitTime(date){
         return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })
       },
@@ -155,7 +153,7 @@ export default {
 	  },
 	remove() {
 
-		if (confirm('Confirm removing event № ' + this.event.id)) {
+		if (confirm('Confirm removing this event')) {
 			this.$http.delete('http://booker.local/Server/api/events/event/' + this.id)
 			.then(function(response) {
 			let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
@@ -180,9 +178,8 @@ export default {
 				.then(event => {
 					
 					this.event = event[0];
-					console.log(this.event);
-					this.start_time = this.event.start_time.substring(11);
-					this.end_time = this.event.end_time.substring(11);
+					this.start_time = this.event.start_time.substring(11, 16);
+					this.end_time = this.event.end_time.substring(11, 16);
 					this.date = this.event.start_time.substring(0, 10);
 				})
 	}

@@ -116,7 +116,7 @@ export default {
         dFirstMonth: '1',
         day:["Mn", "Tu","We","Th","Fr","Sa", "Su"],
         days: [],
-		monthes: ["January","February","March","April","May","June","July","August","September","Oktober","November","December"],
+		monthes: ["January","February","March","April","May","June","July","August","September","October","November","December"],
 		date: new Date(),
 		interval: null,
 		name: '',
