@@ -88,8 +88,6 @@
 </div>
 </template>
 <script>
-
-
 export default {
   data() {
 	return {
@@ -139,7 +137,6 @@ export default {
 			
 		})
 	},
-
 	digitTime(date){
         return date.toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })
       },
@@ -148,13 +145,20 @@ export default {
 		var dd = String(today.getDate()).padStart(2, '0');
 		var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 		var yyyy = today.getFullYear();
-
 		return yyyy + '-' + mm + '-' + dd;
 	  },
 	remove() {
-
+		const data = {
+			id: this.event.id,
+			start_time: this.date + ' ' + this.start_time + ':' + '00',
+			
+			idrec: this.event.idrec,
+			iduser: this.event.iduser,
+			is_recurring: this.event.is_recurring,
+			applyToAllRec: this.applyToAllRec,
+		}
 		if (confirm('Confirm removing this event')) {
-			this.$http.delete('http://booker.local/Server/api/events/event/' + this.id)
+			this.$http.post('http://booker.local/Server/api/events/deleteevent/' + this.id, data)
 			.then(function(response) {
 			let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
 			let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
@@ -185,7 +189,6 @@ export default {
 	}
   
   }
-
   }
 </script>
 
