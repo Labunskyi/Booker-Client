@@ -88,6 +88,7 @@
 </div>
 </template>
 <script>
+import {serverUrl} from '../config/config'
 export default {
   data() {
 	return {
@@ -120,7 +121,7 @@ export default {
 			applyToAllRec: this.applyToAllRec,
 		},
 		formatdata = JSON.stringify(data)
-		this.$http.put('http://booker.local/Server/api/events/eventedit/', formatdata)
+		this.$http.put(serverUrl + 'events/eventedit/', formatdata)
 		.then(function(response) {
 			if (response.body.errors == undefined) {
 				let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
@@ -128,8 +129,8 @@ export default {
 				alert('The event '+time1+ '-'+time2+' was updated. The text for this event is: '+this.event.description);
 				this.$router.push('/')
 				return response.json();
-			} else if (response.body.errors == 'This time is already booked!') {
-				alert('This time is already booked!');
+			} else if (response.body.errors == 'This time has already booked!') {
+				alert('This time has already booked!');
 			} 
 		})
 		.then(formData => {
@@ -158,7 +159,7 @@ export default {
 			applyToAllRec: this.applyToAllRec,
 		}
 		if (confirm('Confirm removing this event')) {
-			this.$http.post('http://booker.local/Server/api/events/deleteevent/' + this.id, data)
+			this.$http.post(serverUrl + 'events/deleteevent/' + this.id, data)
 			.then(function(response) {
 			let time1 = this.digitTime(new Date(this.date + ' ' + this.start_time));
 			let time2 =  this.digitTime(new Date(this.date + ' ' + this.end_time));
@@ -175,7 +176,7 @@ export default {
 		}
 	},
 	getEventById(id){
-		this.$http.get('http://booker.local/Server/api/events/eventbyid/' + this.id)
+		this.$http.get(serverUrl + 'events/eventbyid/' + this.id)
 				.then(function(response) {
 				return response.json()
 				})

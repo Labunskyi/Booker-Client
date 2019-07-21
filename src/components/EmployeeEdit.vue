@@ -34,7 +34,7 @@
 </div>
 </template>
 <script>
-
+import {serverUrl} from '../config/config'
 
 export default {
   data() {
@@ -56,7 +56,7 @@ export default {
 			password: this.employee.password,
 		},
 		formatdata = JSON.stringify(data)
-		this.$http.put('http://booker.local/Server/api/users/useredit/', formatdata)
+		this.$http.put(serverUrl + 'users/useredit/', formatdata)
 		.then(function(response) {
         alert('The employee was updated.');
 		this.$router.push('/employee/list')
@@ -69,7 +69,7 @@ export default {
 	},
 	
 	getEmployeeById(id){
-		this.$http.get('http://booker.local/Server/api/users/userbyid/' + this.id)
+		this.$http.get(serverUrl + 'users/userbyid/' + this.id)
 				.then(function(response) {
 				return response.json()
 				})

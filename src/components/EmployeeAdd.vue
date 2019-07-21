@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import {serverUrl} from '../config/config'
 export default {
   data() {
 	return {
@@ -60,7 +61,7 @@ export default {
 			is_active: this.is_active,
 		}
 		if (this.username && this.email && this.password){
-		this.$http.post('http://booker.local/Server/api/users/user/', formData)
+		this.$http.post(serverUrl + 'users/user/', formData)
 		.then(response => {
 		return response.json()
 		})

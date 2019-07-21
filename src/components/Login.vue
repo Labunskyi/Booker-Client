@@ -34,7 +34,8 @@
 </template>
 
 <script>
-	export default {
+  import {serverUrl} from '../config/config'
+  export default {
   data() {
 	return {
 		username: '',
@@ -52,7 +53,7 @@
 		
 		}
 		if (this.username != "" && this.password != "" && this.email != "") {
-		this.$http.post('http://booker.local/Server/api/users/userslogin/', data)
+		this.$http.post(serverUrl + 'users/userslogin/', data)
 		.then(function(response) {
 			
 			if (response.body) {

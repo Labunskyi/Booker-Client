@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import {serverUrl} from '../config/config'
 export default {
   data() {
 	return {
@@ -45,7 +46,7 @@ export default {
    
   methods: {
 	getEmployeeList(){
-		this.$http.get('http://booker.local/Server/api/users/userlist/')
+		this.$http.get(serverUrl + 'users/userlist/')
 				.then(function(response) {
 				return response.json()
 				})

@@ -105,7 +105,7 @@
 </template>
 
 <script>
-
+import {serverUrl} from '../config/config'
 export default {
 
   data() {
@@ -155,7 +155,7 @@ export default {
 	  } else if (this.comperativeInterval()) {
 			alert('Denied to book a boardroom for this period. Min interval should be no less 30 minute');
 	  } else {
-	  this.$http.post('http://booker.local/Server/api/events/singleevent/', data)
+	  this.$http.post(serverUrl + 'events/singleevent/', data)
 		.then(function(response) {
 			if (response.body.errors == undefined) {
 				let boardroom = this.event.idroom;
@@ -164,8 +164,8 @@ export default {
 				alert('Boardroom ' + boardroom + '.' + ' The event '+time1+ '-'+time2+' has been added. The text for this event is: '+this.event.description);
 				this.$router.push('/')
 				return response.json();
-			} else if (response.body.errors == 'This time is already booked!') {
-				alert('This time is already booked!');
+			} else if (response.body.errors == 'This time has already booked!') {
+				alert('This time has already booked!');
 			} else if (response.body.errors == 'Duration limit exceeded') {
 				alert('Duration limit exceeded');
 			} 

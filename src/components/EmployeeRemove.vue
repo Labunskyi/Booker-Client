@@ -2,8 +2,7 @@
 
 </template>
 <script>
-
-
+import {serverUrl} from '../config/config'
 export default {
   data() {
 	return {
@@ -21,7 +20,7 @@ export default {
 		},
 		formatdata = JSON.stringify(data)
 		if (confirm('Confirm removing this employee')) {
-			this.$http.put('http://booker.local/Server/api/users/userremove/', formatdata)
+			this.$http.put(serverUrl + 'users/userremove/', formatdata)
 			.then(function(response) {
 			this.$router.push('/employee/list')
 			return response.json();

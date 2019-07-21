@@ -107,7 +107,7 @@
 
 <script>
 
-
+import {serverUrl} from '../config/config'
 export default {
   data() {
 	return {
@@ -210,7 +210,7 @@ export default {
 				this.$router.push('/login')
 			},
 			getEvents: function(room){
-				this.$http.get('http://booker.local/Server/api/events/events/'+ this.room)
+				this.$http.get(serverUrl + 'events/events/'+ this.room)
 				.then(function(response) {
 				return response.json() 
 				})
